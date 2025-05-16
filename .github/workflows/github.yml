@@ -32,7 +32,7 @@ jobs:
 
 
       - name: Tag Docker image
-        run: docker tag eks-app:latest davidayo97/us-mobile-hello:${GITHUB_SHA}
+        run: docker tag us-mobile-hello:latest davidayo97/us-mobile-hello:${GITHUB_SHA}
 
       - name: Show Docker images
         run: docker images
