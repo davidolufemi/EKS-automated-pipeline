@@ -1,6 +1,6 @@
 image:
   repository: davidayo97/us-mobile-hello
-  tag: 59c6d0aee8c9b427cfb5d78612366752d2ed1784
+  tag: 0639995b3f80e7a14abe34515b7dbf3e622e6d61
   pullPolicy: IfNotPresent
 service:
   type: LoadBalancer
@@ -9,7 +9,7 @@ service:
 
 namespace: eksappns
 
-# values.yaml
+
 ingress:
   enabled: false
 

@@ -1,3 +1,37 @@
+#VPC
+
+variable "name" {
+    type = string
+    description = "name of the VPC"
+}
+
+variable "cidr" {
+    type = string
+    description = "CIDR range"
+  
+}
+
+variable "azs" {
+  type = list(string)
+  description = "AZ's"
+}
+
+variable "private_subnets" {
+  type = list(string)
+  description = "private subnets"
+}
+
+variable "public_subnets" {
+  type = list(string)
+  description = "public subnets"
+}
+
+
+variable "Environment" {
+  type = string
+}
+
+# EKS
 variable "cluster_name" {
   type = string
 }
@@ -18,19 +52,6 @@ variable "enable_cluster_creator_admin_permissions" {
   type = bool
 }
 
-variable "vpc_id" {
-  type = string
-}
-
-variable "subnet_ids" {
-  type = list(string)
-  
-}
-
-variable "control_plane_subnet_id" {
-  type = list(string)
-  
-}
 
 variable "eks_managed_node_groups" {
   type = map(object({
@@ -48,4 +69,9 @@ variable "tags" {
     Environment = "prod"
   }
 }
+
+
+
+
+
 

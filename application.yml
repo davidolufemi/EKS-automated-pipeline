@@ -1,7 +1,9 @@
 # 1. create ArgoCD namespace: kubectl create namespace argocd
-# 2. kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+# 2. kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml or helm install argocd argo/argo-cd -n argocd (to use helm)
 # 3. Port  forward -- kubectl port-forward svc/argocd-server -n argocd 8080:443
 # 4. Get secret -- kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+# update kube config -- aws eks --region us-east-1 update-kubeconfig --name app-cluster
+
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -14,11 +16,14 @@ spec:
   source:
     repoURL: https://github.com/davidolufemi/us-mobile-takehome.git
     targetRevision: HEAD
-    path: Argo
+    path: Helm/eksapp
+    helm:
+      valueFiles:
+        - values.yml
   
   destination:
     server: https://kubernetes.default.svc
-    namespace: name-20250515232419564800000010
+    namespace: eksappns
   syncPolicy:
     automated:
       prune: true
