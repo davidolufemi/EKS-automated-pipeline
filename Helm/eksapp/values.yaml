@@ -9,7 +9,9 @@ service:
 
 namespace: eksappns
 
-
+spec:
+  replicas: 2
+  
 ingress:
   enabled: false
 
