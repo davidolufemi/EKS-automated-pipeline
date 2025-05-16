@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: eksappns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eksapp
+  namespace: eksappns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: eksapp
+  template:
+    metadata:
+      labels:
+        app: eksapp
+    spec:
+      containers:
+        - name: eksapp
+          image: davidayo97/us-mobile-hello:59c6d0aee8c9b427cfb5d78612366752d2ed1784
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eksapp
+  namespace: eksappns
+spec:
+  type: LoadBalancer
+  selector:
+    app: eksapp
+  ports:
+    - port: 80
+      targetPort: 8080
