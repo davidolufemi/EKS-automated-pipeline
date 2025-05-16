@@ -1,0 +1,18 @@
+image:
+  repository: davidayo97/us-mobile-hello
+  tag: 59c6d0aee8c9b427cfb5d78612366752d2ed1784
+  pullPolicy: IfNotPresent
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8080
+
+namespace: eksappns
+
+# values.yaml
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
