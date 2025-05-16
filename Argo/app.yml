@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: eksapp
-          image: davidayo97/us-mobile-hello:59c6d0aee8c9b427cfb5d78612366752d2ed1784
+          image: davidayo97/us-mobile-hello:0639995b3f80e7a14abe34515b7dbf3e622e6d61
           ports:
             - containerPort: 8080
 ---
