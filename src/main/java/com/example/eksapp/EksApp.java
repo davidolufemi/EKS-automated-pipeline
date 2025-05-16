@@ -1,4 +1,4 @@
-package com.example.eksdemo;
+package com.example.eksapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
-public class EksDemoApplication {
+public class EksApp {
     public static void main(String[] args) {
-        SpringApplication.run(EksDemoApplication.class, args);
+        SpringApplication.run(EksApp.class, args);
     }
 }
 
