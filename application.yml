@@ -16,7 +16,7 @@ spec:
   source:
     repoURL: https://github.com/davidolufemi/us-mobile-takehome.git
     targetRevision: HEAD
-    path: Helm/eksapp
+    path: Helm
     helm:
       valueFiles:
         - values.yml
