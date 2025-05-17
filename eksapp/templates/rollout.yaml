@@ -25,7 +25,7 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
-  progressDeadlineSeconds: 30
+  progressDeadlineSeconds: 50
   strategy:
     canary:
       maxSurge: 1
