@@ -17,9 +17,6 @@ spec:
     repoURL: https://github.com/davidolufemi/us-mobile-takehome.git
     targetRevision: HEAD
     path: Helm
-    helm:
-      valueFiles:
-        - values.yml
   
   destination:
     server: https://kubernetes.default.svc
