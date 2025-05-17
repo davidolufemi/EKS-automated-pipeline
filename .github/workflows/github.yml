@@ -76,7 +76,7 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-  build-and-push-docker-image-and-update values-file:
+  build-and-push-docker-image-and-update-values-file:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
