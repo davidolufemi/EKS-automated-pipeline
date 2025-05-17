@@ -20,7 +20,7 @@ spec:
   source:
     repoURL: https://github.com/davidolufemi/us-mobile-takehome.git
     targetRevision: HEAD
-    path: eksapp/templates
+    path: eksapp
   
   destination:
     server: https://kubernetes.default.svc
