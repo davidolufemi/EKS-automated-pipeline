@@ -3,6 +3,7 @@ name: Monitor ArgoCD and Rollback if Degraded
 on:
   schedule:
     - cron: "*/5 * * * *"
+  workflow_dispatch:
 
 jobs:
   rollback-if-degraded:
