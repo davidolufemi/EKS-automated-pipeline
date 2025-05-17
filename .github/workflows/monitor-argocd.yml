@@ -17,7 +17,12 @@ jobs:
         run: |
           curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
           chmod +x argocd
-          sudo mv argocd /usr/local/bin
+          sudo mv argocd /usr/local/bin/argocd
+
+      - name: Verify ArgoCD CLI install
+        run: |
+          which argocd
+          argocd version
 
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
