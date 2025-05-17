@@ -99,13 +99,5 @@ jobs:
       - name: Push Docker image
         run: docker push davidayo97/us-mobile-hello:${GITHUB_SHA}
 
-      - name: Install yq
-        run: sudo snap install yq
 
-      - name: Update Helm values.yaml image tag
-        run: |
-          yq -i ".image.tag = \"${{ github.sha }}\"" eksapp/values.yaml
-
-      - name: Verify tag in values.yaml
-        run: yq '.image.tag' eksapp/values.yaml
 
