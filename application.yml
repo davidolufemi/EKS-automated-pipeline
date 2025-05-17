@@ -4,6 +4,8 @@
 # 4. Get secret -- kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 # update kube config -- aws eks --region us-east-1 update-kubeconfig --name app-cluster
 
+# Argo-rollouts
+# create argo rollouts namespace: kubectl create namespace argo-rollouts
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
