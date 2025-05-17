@@ -26,14 +26,11 @@ spec:
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
   strategy:
-    rolloutStrategy:
-      canary:
-        maxSurge: 1
-        maxUnavailable: 0
-        steps:
-          - setWeight: 25
-          - pause:
-              duration: 30
-          - setWeight: 100
-          - pause:
-              duration: 30
+    canary:
+      maxSurge: 1
+      maxUnavailable: 0
+      steps:
+        - setWeight: 25
+        - pause: { duration: 30s }
+        - setWeight: 100
+        - pause: { duration: 30s }
