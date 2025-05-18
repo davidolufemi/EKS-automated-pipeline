@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eksapp-active
+  namespace: eksappns
+spec:
+  type: LoadBalancer  # or ClusterIP if behind an Ingress
+  selector:
+    app.kubernetes.io/name: eksapp
+  ports:
+    - port: 80
+      targetPort: 8080

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eksapp-preview
+  namespace: eksappns
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: eksapp
+  ports:
+    - port: 80
+      targetPort: 8080
