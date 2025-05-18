@@ -4,7 +4,7 @@ metadata:
   name: eksapp-active
   namespace: eksappns
 spec:
-  type: LoadBalancer  # or ClusterIP if behind an Ingress
+  type: LoadBalancer 
   selector:
     app.kubernetes.io/name: eksapp
   ports:
