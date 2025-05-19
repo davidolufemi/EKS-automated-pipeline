@@ -1,5 +1,6 @@
-                                               High Level Architectural Diagram
-<img width="1231" alt="image" src="https://github.com/user-attachments/assets/02e8fb12-b950-4215-a0fb-0439d9d8256f" />
+                                               High Level Architectural Diagram (current implementation)
+![image](https://github.com/user-attachments/assets/975bed09-efdc-4340-89ab-3525a54a88fa)
+
 
 
                                                         Introduction.
@@ -45,7 +46,7 @@ A typical helm chart consists of some of the following files.
 3. Deployment.yaml: Defines our deployment (container)
 4. Service.yaml: Defines how we want to expose traffic to the app (Nodeport, LoadBalancer, ClusterIP)
 
-This along with the other files in the template folder will be pushed to our Git repository. We will then have Argo CD monitor the repo folder for any changes in the manifest. We need to define an Argo application file do define which repo we want to monitoe. Below is how our Argo application looks like:
+This along with the other files in the template folder will be pushed to our Git repository. We will then have Argo CD monitor the repo folder for any changes in the manifest. We need to define an Argo application file do define which repo we want to monitor. Below is how our Argo application looks like:
 
 ![image](https://github.com/user-attachments/assets/41fc75d4-c411-4502-a0b6-72f027ca4585)
 
@@ -59,7 +60,51 @@ So far, here is the workflow:
 
 
 
-This is fine, but using ArgoCD alone does not have us to have a deployment model (canary or blue-green). For this, we will use Argo Rollouts to define a strategy. 
+This is fine, but using ArgoCD alone does not have us to have a deployment model (canary or blue-green). For this, we will use Argo Rollouts to define a strategy. We will implement the blue-green deployment model. We will need two files - one for the active service and one for the preview service (new/green). We will also update our rollout.yaml file to reflect this new model. 
+![image](https://github.com/user-attachments/assets/2d41ef4f-4ab5-4018-9a08-9e9c3d5e659f)
+
+auto promotion is set to false. We will manually promote the service ourselves.
+
+Active:
+![image](https://github.com/user-attachments/assets/a50dea88-239b-47a0-b817-0a6f19042bc2)
+  
+
+Preview:
+![image](https://github.com/user-attachments/assets/4d7439d9-4e45-48b3-abcb-5283e9aa1529)
+
+Both services are using the Load Balancer type so that we can access the apps from the internet. Ideally, we would not expose the preview or blue application to the internet because we do not want our users to access it by mistake. We would use nodeport and port forward the traffic to our local machine.
+For demo purposes, I curently have an app running that displays "Welcome to EKS version 2!!". The new version of the app will say "Hi US Mobile team!". After I update the rollout file with the new image tag, I am then going to push it to the Git repo so that Argo can see the change. Our blue-green strategy will then kick off and Argo Rollouts will take over.
+Below is an image that shows the deployment in action. The promotion is paused:
+<img width="1725" alt="image" src="https://github.com/user-attachments/assets/c93a89cc-4bb3-4888-880f-89ea7ef2f9bf" />
+
+New version is accessed via load balancer:
+<img width="1715" alt="image" src="https://github.com/user-attachments/assets/2a7393a0-8d1a-41d8-b99e-472b3ad2ae56" />
+
+Old version is still running in production:
+<img width="1713" alt="image" src="https://github.com/user-attachments/assets/4a941912-90df-47d0-8790-df09c2340224" />
+
+Now, once we promote the new version, we get this: 
+<img width="1700" alt="image" src="https://github.com/user-attachments/assets/308b7efb-0d44-419e-ac20-f073a3afb019" />
+
+The production endpoint now reflects this change:
+<img width="1712" alt="image" src="https://github.com/user-attachments/assets/1d15cb03-38b0-4384-a2ef-e0f95ca9f754" />
+
+
+                                      Recommendations for this architecture.
+
+![image](https://github.com/user-attachments/assets/dbde79e9-da1c-4efc-acbf-6fa1863d6731)
+
+
+1. Prometheus and Grafana for monitoring our cluster, and also an alerting system to inform us of potential cluster issues.
+2. AWS KMS to manage any sensitive secrets our applications may need.
+3. AWS WAF to protect against web app vulnerabilities (e.g OWASP 10).
+
+
+
+
+
+
+
 
 
 
