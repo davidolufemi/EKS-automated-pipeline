@@ -28,7 +28,7 @@ spec:
   progressDeadlineSeconds: 50
   strategy:
     blueGreen:
-      #activeService: eksapp-active
+      activeService: eksapp-active
       previewService: eksapp-preview
       autoPromotionEnabled: false
 
