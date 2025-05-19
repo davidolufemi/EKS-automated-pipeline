@@ -6,8 +6,9 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app.kubernetes.io/name: eksapp
-    rollouts-pod-template-hash: "{{`{{`}} .status.currentPodHash {{`}}`}}"
+    app.kubernetes.io/name: {{ include "eksapp.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    rollouts-pod-template-hash: "{{`{{`}} rollouts-pod-template-hash {{`}}`}}"
   ports:
     - port: 80
       targetPort: 8080
