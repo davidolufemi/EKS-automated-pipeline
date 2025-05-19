@@ -17,7 +17,7 @@ class DemoController {
 
     @GetMapping("/")
     public String home() {
-        return "tTesting blue-green";
+        return "i removed the image tag in the values.yml file and this is the green deployment.";
     }
 
     @GetMapping("/health")
