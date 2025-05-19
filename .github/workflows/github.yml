@@ -117,7 +117,7 @@ jobs:
         run: |
           CHART_PACKAGE=$(ls *.tgz)
           helm upgrade --install eksapp $CHART_PACKAGE \
-            --namespace eksappnshelm --create-namespace \
+            --namespace eksappns --create-namespace \
             --wait --atomic
 
   # build-and-push-docker-image-and-update-values-file:
