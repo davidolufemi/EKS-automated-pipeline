@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: rollouts-demo
-        image:  davidayo97/us-mobile-hello:4619dd3aa4b72c12c2ac566295e7518283976461
+        image:  davidayo97/us-mobile-hello:9f89cd38603c86f732e95a62e8671a81dbd37dac
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
