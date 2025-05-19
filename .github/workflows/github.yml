@@ -74,7 +74,7 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-  deploy:
+  deploy-helm:
     runs-on: ubuntu-latest
 
     steps:
@@ -90,9 +90,11 @@ jobs:
 
       - name: Install kubectl
         run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          KUBECTL_VERSION=$(curl -s https://dl.k8s.io/release/stable.txt)
+          curl -L -o kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin
+
 
       - name: Install Helm
         run: |
