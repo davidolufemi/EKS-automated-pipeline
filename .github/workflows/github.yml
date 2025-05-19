@@ -91,14 +91,12 @@ jobs:
       - name: Install kubectl
         shell: bash
         run: |
-          set -e
-          KUBECTL_VERSION=$(curl -s https://dl.k8s.io/release/stable.txt)
-          echo "Resolved kubectl version: $KUBECTL_VERSION"
+          KUBECTL_VERSION="v1.29.2"
           DOWNLOAD_URL="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
-          echo "Downloading from $DOWNLOAD_URL"
+          echo "Downloading kubectl from $DOWNLOAD_URL"
           curl -L -o kubectl "$DOWNLOAD_URL"
           chmod +x kubectl
-          sudo mv kubectl /usr/local/bin  
+          sudo mv kubectl /usr/local/bin
          
 
 
