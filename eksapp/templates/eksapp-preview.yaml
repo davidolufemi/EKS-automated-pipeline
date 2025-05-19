@@ -4,9 +4,10 @@ metadata:
   name: eksapp-preview
   namespace: eksappns
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: eksapp
+    rollouts-pod-template-hash: "{{`{{`}} .status.currentPodHash {{`}}`}}"
   ports:
     - port: 80
       targetPort: 8080
