@@ -17,7 +17,7 @@ class DemoController {
 
     @GetMapping("/")
     public String home() {
-        return "Welcome to EKS. Testing argo auto";
+        return "Welcome to EKS. This is the green/test image";
     }
 
     @GetMapping("/health")
