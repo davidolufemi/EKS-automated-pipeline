@@ -1,5 +1,6 @@
-                                            High Level Architectural Diagram
-<img width="1500" alt="image" src="https://github.com/user-attachments/assets/578b2426-85b0-4e84-8fae-73a728ddb37b" />
+                                               High Level Architectural Diagram
+<img width="1231" alt="image" src="https://github.com/user-attachments/assets/02e8fb12-b950-4215-a0fb-0439d9d8256f" />
+
 
                                                         Introduction.
 This project follows the git-ops approach. it is an event-driven architecture in the sense that the user only has to update the image tag and it is automatically pulled from Dockerhub once Git sees the cnange has been made. It involves a microservice that is running on an EKS cluster, utilizing tools like Terraform, ArgoCD, Argo Rollouts, Trivy and OWASP dependency check (for security), and so on.
