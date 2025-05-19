@@ -89,12 +89,16 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Install kubectl
+        shell: bash
         run: |
+          set -e
           KUBECTL_VERSION=$(curl -s https://dl.k8s.io/release/stable.txt)
-          curl -L -o kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          echo "Resolved kubectl version: $KUBECTL_VERSION"
+          DOWNLOAD_URL="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          echo "Downloading from $DOWNLOAD_URL"
+          curl -L -o kubectl "$DOWNLOAD_URL"
           chmod +x kubectl
-          sudo mv kubectl /usr/local/bin
-
+          sudo mv kubectl /usr/local/bin  
          
 
 
