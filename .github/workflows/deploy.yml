@@ -175,7 +175,7 @@ jobs:
     steps:
     - name: Update image tag in values.yaml
       run: |
-        sed -i "s|image: *davidayo97/us-mobile-takehome:.*|image: davidayo97/us-mobile-takehome:${GITHUB_SHA}|" eksapp/templates/rollout.yaml
+        sed -i "s|image: *davidayo97/us-mobile-hello:.*|image: davidayo97/us-mobile-hello:${GITHUB_SHA}|" eksapp/templates/rollout.yaml
 
     - name: Commit and push image tag update
       env:
