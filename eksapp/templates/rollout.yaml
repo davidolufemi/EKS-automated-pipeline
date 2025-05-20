@@ -15,11 +15,11 @@ spec:
     spec:
       containers:
       - name: rollouts-demo
-        image: davidayo97/us-mobile-hello:0bbfe1008dafa6c4650e5db40207571df8e9d534verybad1234
+        image: davidayo97/us-mobile-hello:0bbfe1008dafa6c4650e5db40207571df8e9d534verybad12348
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-  progressDeadlineSeconds: 30    
+  progressDeadlineSeconds: 15
   strategy:
     blueGreen: 
       # activeService specifies the service to update with the new template hash at time of promotion.
