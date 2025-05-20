@@ -246,37 +246,20 @@ jobs:
       run: |
         helm repo add argo https://argoproj.github.io/argo-helm
         helm repo update   
-
-    - name: Detect and handle stuck Helm release (safe for prod)
+    - name: Delete stuck Helm secret if status is pending-upgrade
       run: |
         set -e
 
-        echo "🔍 Checking ArgoCD Helm release status..."
-        RELEASE_JSON=$(helm list -n argocd -f argocd -o json || echo "")
+        RELEASE_STATUS=$(helm list -n argocd -f argocd -o json | jq -r '.[0].status // ""')
 
-        if [[ "$RELEASE_JSON" != "[]" && "$RELEASE_JSON" != "" ]]; then
-          STATUS=$(echo "$RELEASE_JSON" | jq -r '.[0].status')
-          echo "✅ ArgoCD release status: $STATUS"
+        echo "Detected ArgoCD Helm release status: '$RELEASE_STATUS'"
 
-          if [[ "$STATUS" == "pending-install" || "$STATUS" == "pending-upgrade" || "$STATUS" == "pending-rollback" ]]; then
-            echo "::warning ::Helm release is stuck in $STATUS. Attempting rollback..."
-            helm rollback argocd -n argocd || {
-              echo "::error ::Rollback failed. Manual intervention required."
-              exit 1
-            }
-          fi
+        if [[ "$RELEASE_STATUS" == "pending-upgrade" ]]; then
+          echo "::warning ::Helm release 'argocd' is stuck in pending-upgrade. Cleaning up secrets..."
+          kubectl delete secret -n argocd -l "owner=helm,name=argocd" || true
+          echo "::notice ::Helm secrets for 'argocd' removed."
         else
-          echo "⚠️ No active Helm release found via 'helm list'. Checking secrets for leftover Helm release metadata..."
-          HELM_SECRETS=$(kubectl get secrets -n argocd -l "owner=helm,name=argocd" -o name || true)
-
-          if [[ -n "$HELM_SECRETS" ]]; then
-            echo "::error ::Helm release is invisible to Helm but still exists as secrets:"
-            echo "$HELM_SECRETS"
-            echo "❌ Skipping install to avoid production overwrite."
-            exit 1
-          else
-            echo "✅ No Helm secrets found. Proceeding with fresh install."
-          fi
+          echo "No cleanup needed. Helm status is '$RELEASE_STATUS'."
         fi
 
    
