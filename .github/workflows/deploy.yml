@@ -175,7 +175,7 @@ jobs:
     steps:
     - name: Update image tag in values.yaml
       run: |
-        sed -i "s|image: *davidayo97/us-mobile-hello:.*|image: davidayo97/us-mobile-hello:${GITHUB_SHA}|" Rollout.yaml
+        sed -i "s|image: *davidayo97/us-mobile-hello:.*|image: davidayo97/us-mobile-hello:${GITHUB_SHA}|" rollout.yaml
 
     - name: Commit and push image tag update
       env:
