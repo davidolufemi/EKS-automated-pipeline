@@ -237,7 +237,7 @@ jobs:
         helm repo update   
 
     - name: Create ArgoCD namespace
-      run: kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+      run: kubectl create namespace argocd || true
  
     
     - name: Install ArgoCD 
