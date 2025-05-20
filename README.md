@@ -169,10 +169,10 @@ After updating the image tag in `rollout.yaml`, Argo Rollouts initiated the new 
 
 ##  Summary of what I did
 
-- Provision cloud infrastructure with Teraform
-- Containerize Spring app.
+- Provisioned cloud infrastructure with Teraform
+- Containerized Spring app.
 - Pipeline builds and pushes to Docker Hub
 - Helm chart is updated and deployed via ArgoCD
 - Rollback testing was performed using Helm’s `--atomic` flag
 - Blue/green deployment strategy was implemented using Argo Rollouts
-- Trivy and OWASP dependency check were integrated for DevSecOps coverage
+- Trivy and OWASP dependency check were integrated for DevSecOps and security
