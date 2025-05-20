@@ -1,5 +1,3 @@
-# DevOps Take-Home Assignment: GitOps Deployment Pipeline on AWS EKS
-
 ##  High-Level Architectural Overview (Scope of Assignment)
 
 ![Architecture Diagram](https://github.com/user-attachments/assets/975bed09-efdc-4340-89ab-3525a54a88fa)
