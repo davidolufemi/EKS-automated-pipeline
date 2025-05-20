@@ -167,7 +167,7 @@ After updating the image tag in `rollout.yaml`, Argo Rollouts initiated the new 
 
 ---
 
-##  Summary
+##  Summary of what I did
 
 - Provision cloud infrastructure with Teraform
 - Containerize Spring app.
