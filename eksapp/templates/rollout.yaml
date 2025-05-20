@@ -15,11 +15,11 @@ spec:
     spec:
       containers:
       - name: rollouts-demo
-        image: davidayo97/us-mobile-hello:0bbfe1008dafa6c4650e5db40207571df8e9d534verybad123
+        image: davidayo97/us-mobile-hello:0bbfe1008dafa6c4650e5db40207571df8e9d534verybad1234
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-  progressDeadlineSeconds: 45    
+  progressDeadlineSeconds: 30    
   strategy:
     blueGreen: 
       # activeService specifies the service to update with the new template hash at time of promotion.
@@ -33,4 +33,4 @@ spec:
       # immediately before the promotion. If omitted, the default behavior is to promote the new
       # stack as soon as the ReplicaSet are completely ready/available.
       # Rollouts can be resumed using: `kubectl argo rollouts promote ROLLOUT`
-      autoPromotionEnabled: false
+      autoPromotionEnabled: true
