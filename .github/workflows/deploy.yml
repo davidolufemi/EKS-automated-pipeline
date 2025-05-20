@@ -246,23 +246,18 @@ jobs:
       run: |
         helm repo add argo https://argoproj.github.io/argo-helm
         helm repo update   
-    - name: Clean up stuck ArgoCD Helm release if needed
+
+    - name: Helm rollback if stuck
       run: |
-        set -e
-        RELEASE_JSON=$(helm list -n argocd -f argocd -o json)
-        if [[ "$RELEASE_JSON" != "[]" && "$RELEASE_JSON" != "" ]]; then
-          STATUS=$(echo "$RELEASE_JSON" | jq -r '.[0].status')
-              echo "ArgoCD release status: $STATUS"
-          if [[ "$STATUS" == "pending-install" || "$STATUS" == "pending-upgrade" || "$STATUS" == "pending-rollback" ]]; then
-            echo "Found stuck release with status: $STATUS. Cleaning up..."
-            helm uninstall argocd -n argocd || true
-            kubectl delete secret -n argocd -l "owner=helm" || true
-          else
-            echo "No stuck release. Status: $STATUS"
-          fi
+        STATUS=$(helm list -n argocd -f argocd -o json | jq -r '.[0].status')
+        if [[ "$STATUS" == "pending-install" || "$STATUS" == "pending-upgrade" || "$STATUS" == "pending-rollback" ]]; then
+          echo "Release is stuck in $STATUS. Rolling back..."
+          helm rollback argocd -n argocd || true
         else
-          echo "No existing ArgoCD release found. Skipping cleanup."
+          echo "Release is not stuck. Status: $STATUS"
         fi
+
+       
 
 
    
