@@ -239,11 +239,10 @@ jobs:
     - name: Create ArgoCD namespace
       run: kubectl create namespace argocd || true
  
-    
+   
     - name: Install ArgoCD 
       run: |
-        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-
+        helm upgrade --install argocd argo/argo-cd
 
     - name: Install the ArgoCD application 
       run: |
