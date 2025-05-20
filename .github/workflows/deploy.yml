@@ -247,16 +247,26 @@ jobs:
         helm repo add argo https://argoproj.github.io/argo-helm
         helm repo update   
 
-    - name: Detect stuck Helm release manually and clean it
+    - name: Detect stuck Helm release and roll back if needed
       run: |
-        RELEASE_SECRET=$(kubectl get secrets -n argocd -l "owner=helm,name=argocd" -o name)
-        if [[ -n "$RELEASE_SECRET" ]]; then
-          echo "Found lingering Helm release secret: $RELEASE_SECRET. Cleaning up..."
-          helm uninstall argocd -n argocd || true
-          kubectl delete secret -n argocd -l "owner=helm,name=argocd" || true
+        RELEASE_JSON=$(helm list -n argocd -f argocd -o json)
+        if [[ "$RELEASE_JSON" != "[]" && "$RELEASE_JSON" != "" ]]; then
+          STATUS=$(echo "$RELEASE_JSON" | jq -r '.[0].status')
+          echo "ArgoCD release status: $STATUS"
+          
+          if [[ "$STATUS" == "pending-install" || "$STATUS" == "pending-upgrade" || "$STATUS" == "pending-rollback" ]]; then
+            echo "::warning ::Release is stuck in $STATUS. Attempting rollback..."
+            helm rollback argocd -n argocd || {
+              echo "::error ::Rollback failed. Manual intervention required."
+              exit 1
+            }
+          else
+            echo "No stuck release. Status: $STATUS"
+          fi
         else
-          echo "No lingering Helm release secrets found. Safe to proceed."
+          echo "No existing ArgoCD release found. Proceeding with fresh install."
         fi
+
 
 
        
