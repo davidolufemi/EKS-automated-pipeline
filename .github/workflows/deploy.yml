@@ -247,5 +247,5 @@ jobs:
 
     - name: Install the ArgoCD application 
       run: |
-        kubectl apply -f application.yaml
+        kubectl apply -f application.aml
        
