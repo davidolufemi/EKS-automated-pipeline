@@ -24,8 +24,8 @@ jobs:
         terraform_version: 1.5.6
 
     - name: Terraform Init
-      run: terraform -chdir=Terraform/code init
+      run: terraform -chdir=Terraform/ init
 
 
     - name: Terraform Apply
-      run: terraform -chdir=Terraform/code apply --auto-approve
+      run: terraform -chdir=Terraform/ apply --auto-approve
