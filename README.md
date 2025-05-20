@@ -1,11 +1,9 @@
-For this project, I split the tasks into two:
-a. Fully automated pipeline that deploys an application to EKS via Helm
-b. GitOps driven development via ArgoCD, Argo and Helm.
 
-## Part 1: Deploying to EKS via Helm (CI/CD Pipeline).
-<img width="1069" alt="image" src="https://github.com/user-attachments/assets/cb1a4616-b125-45c5-b988-7b5cc6dc4378" />
 
-This portion is a fully automated CI/CD pipeline that deploys a change to EKS via Helm once the values.yaml file has been updated with a new image. The pipeline can be seen in .github/workflows/deploy.yml. It is a fully event driven architecture in that the image has to be updated and pushed to the repo, and the pipeline handles everything else (deployment, testing, security).
+## Deploying to EKS via Helm (CI/CD Pipeline).
+<img width="1130" alt="image" src="https://github.com/user-attachments/assets/30959e24-22c2-465a-975c-eb8cf2b82823" />
+
+This is a fully automated CI/CD pipeline that deploys a change to EKS via Helm, ArgoCD and Argo Rollouts once the `rollout.yaml` file has been updated with a new image. The pipeline can be seen in .github/workflows/deploy.yml. It is a fully event driven architecture. The Dev just has to make a change and the pipeline handles everything else (deployment, container building and deployment, security).
 
 ---
 ##  Infrastructure Provisioning
@@ -15,14 +13,15 @@ This portion is a fully automated CI/CD pipeline that deploys a change to EKS vi
 - **Security:**
   - The control plane and data plane are deployed in private subnets for enhanced security.
   - IAM roles such as `AWSServiceRoleForAmazonEKSNodegroup` and `AWSServiceRoleForAutoScaling` are provisioned based on AWS best practices.
-- **Compute:** I selected EC2-managed node groups for this implementation. While Fargate is also a great option (being serverless and cost-efficient for predictable workloads), EC2 was chosen for simplicity and speed during setup. The downside is we would have to install security patches ourselves.
+- **Compute:** I selected EC2-managed node groups for this implementation. While Fargate is also a great option (being serverless and cost-efficient for predictable workloads), I chose EC2 for simplicity and speed during setup. The downside of using EC2 for EKS is we would have to install security patches ourselves going forward.
+- The cluster was also deployed in three AZ's for fault tolerance. 
 
 
 ##  Application Development
 
 - **Language:** Java (Spring Boot)
-- **Containerization:** Docker using a multi-stage build to keep images lightweight.
-- **Tagging:** Each image is tagged with the Git commit SHA for traceability.
+ and assume we would have - **Containerization:** Docker using a multi-stage build to keep images lightweight.
+- **Tagging:** Each image is tagged with the Git commit SHA for traceability and also for updating the docker image during pipeline runtime.
 
 ---
 
@@ -36,23 +35,32 @@ I intentionally used a vulnerable image to simulate real-world scenarios and imp
 
 ---
 
+
+
+
 ##  CI/CD Pipeline & GitOps
 
 ### GitHub Actions Workflow
 1. Developer updates image tag and pushes code to GitHub
 2. Pipeline runs and connects to AWS account, installs necessary software (kubectl, helm, etc)
-3. Pipeline deploys Helm chart.
+3. Argo syncs and sees a change in the Helm repo.
+4. Blue green strategy begins and it is promoted after all the pods come up and the readiness and liveness probes pass.
 
-<img width="1210" alt="image" src="https://github.com/user-attachments/assets/4a140655-948f-4a10-8693-bba53ec9b7f7" />
+<img width="1728" alt="image" src="https://github.com/user-attachments/assets/1039b36d-d959-4c7a-82f4-6f33f7983b02" />
 
 ---
 ##  Rollback Scenario (Testing Failure Recovery)
 
 To test the rollback mechanism:
 - I first deployed a working image.
-- Then I updated the Helm chart with a fake image tag (non-existent image).
-- When deployed using this command:
+- Then I updated the Helm chart (rollback.yaml) with a fake image tag (non-existent image).
+- The image could not be pulled and as a result, liveness and readiness probes failed. Argo Rollouts marked the rollout as degraded.
+ <img width="772" alt="image" src="https://github.com/user-attachments/assets/2638f51c-7085-4e5d-a217-54d30a193099" />
 
+- Traffic still continues to go to the previous version since there was no promotion
+
+NB: If we decide to package our Helm chart and deploy manually, we can use the `--atomic` flag.
+- When deployed using this command:
 ```bash
   helm upgrade --install $RELEASE_NAME ./eksapp \
       --namespace $NAMESPACE \
@@ -74,88 +82,20 @@ To test the rollback mechanism:
 
 
 
-##  Part 2: High-Level Architectural Overview for task 2
-
-![Architecture Diagram](https://github.com/user-attachments/assets/975bed09-efdc-4340-89ab-3525a54a88fa)
 
 ---
 
-##  Introduction
-
-This project shows a GitOps-driven deployment of a Spring Boot microservice to an AWS EKS cluster. It uses Terraform to provision the infrastructure, ArgoCD for GitOps automation and monitoring and Argo Rollouts for blue/green deployment. Security is integrated using Trivy and OWASP Dependency-Check. 
----
-
-##  Infrastructure Provisioning
-
-- **Tool:** Terraform – Terraform was chosen because it is cloud agnostic and follows AWS best practices during environment provisioning.
-- **Resources:** EKS, VPC, IAM roles.
-- **Security:**
-  - The control plane and data plane are deployed in private subnets for enhanced security.
-  - IAM roles such as `AWSServiceRoleForAmazonEKSNodegroup` and `AWSServiceRoleForAutoScaling` are provisioned based on AWS best practices.
-- **Compute:** I selected EC2-managed node groups for this implementation. While Fargate is also a great option (being serverless and cost-efficient for predictable workloads), EC2 was chosen for simplicity and speed during setup. The downside is we would have to install security patches ourselves.
-
----
-
-##  Application Development
-
-- **Language:** Java (Spring Boot)
-- **Containerization:** Docker using a multi-stage build to keep images lightweight.
-- **Tagging:** Each image is tagged with the Git commit SHA for traceability.
-
----
-
-##  Security Integration
-
-I intentionally used a vulnerable image to simulate real-world scenarios and implemented a DevSecOps pipeline to catch security issues:
-
-- **Trivy:** Scans the container for vulnerabilities and gives the associated CVE. Results are in this repository’s security tab.
-- **OWASP Dependency-Check:** Analyzes Java dependencies for known CVEs by scanning the `pom.xml`. Results can be viewed in the GitHub Actions tab under the workflow run labeled **Depcheck Report**.
-- **Production Note:** In real deployments, I would use distroless images to reduce the attack surface. 
-
----
-
-##  CI/CD Pipeline & GitOps
-
-### GitHub Actions Workflow
-1. Code is pushed to GitHub.
-2. Docker image is built and pushed to Docker Hub.
-3. Image is tagged with the commit SHA.
-4. Dev updates Helm chart (values.yaml) with the new tag.
-5. Pipeline deploys Helm chart.
-
-### ArgoCD GitOps Workflow
-- Install ArgoCD using Helm.
-- ArgoCD monitors the `values.yaml` for changes (e.g., image tag updates).
-- Automatically syncs the changes to the EKS cluster.
-
-**ArgoCD Sync Config:**
-```yaml
-syncPolicy:
-  automated:
-    prune: true
-    selfHeal: true
-```
-ArgoCD syncs every 3 minutes by default. Manual syncs can also be triggered via the UI.
-
----
-
-
-
-
-
----
-
-##  Blue/Green Deployment with Argo Rollouts (Extra Credit)
+##  Blue/Green Deployment with Argo Rollouts Explained Further (Extra Credit)
 
 I implemented a blue/green deployment strategy using Argo Rollouts. We need to install Argo Rollouts using Helm before anything. After that is done, we proceed to our rollout strategy.
-
+We will also set autoPromotionEnabled: true so that Argo Rllouts will promote the new version once it passes the necessary checks and the pod is up.
 ### Rollout Strategy Config:
 ```yaml
 strategy:
   blueGreen:
     activeService: rollout-bluegreen-active
     previewService: rollout-bluegreen-preview
-    autoPromotionEnabled: false
+    autoPromotionEnabled: true
 ```
 
 Two services were created:
@@ -208,7 +148,7 @@ After updating the image tag in `rollout.yaml`, Argo Rollouts initiated the new 
 - **Old version (still live)**:
   ![Old Version](https://github.com/user-attachments/assets/4a941912-90df-47d0-8790-df09c2340224)
 
-- **After manual promotion**:
+- **After automated promotion**:
   ![Post Promotion](https://github.com/user-attachments/assets/308b7efb-0d44-419e-ac20-f073a3afb019)
 
 - **Production endpoint updated**:
@@ -216,9 +156,9 @@ After updating the image tag in `rollout.yaml`, Argo Rollouts initiated the new 
 
 ---
 
-##  Recommendations & Future Enhancements
+##  Some Recommendations & Future Enhancements
 
-![Improvement Diagram](https://github.com/user-attachments/assets/dbde79e9-da1c-4efc-acbf-6fa1863d6731)
+<img width="1085" alt="image" src="https://github.com/user-attachments/assets/a831113d-0468-414e-895b-747d86ebe712" />
 
 1. **Monitoring & Alerting:** Install Prometheus and Grafana in the cluster to monitor for potential issues based on set metrics.
 2. **Secrets Management:** Use AWS KMS to manage secrets.
@@ -228,12 +168,3 @@ After updating the image tag in `rollout.yaml`, Argo Rollouts initiated the new 
 
 ---
 
-##  Summary of extra credit
-
-- Provisioned cloud infrastructure with Teraform
-- Containerized Spring app.
-- Pipeline builds and pushes to Docker Hub
-- Helm chart is updated and deployed via ArgoCD
-- Rollback testing was performed using Helm’s `--atomic` flag
-- Blue/green deployment strategy was implemented using Argo Rollouts
-- Trivy and OWASP dependency check were integrated for DevSecOps and security
