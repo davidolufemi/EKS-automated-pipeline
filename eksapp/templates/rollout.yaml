@@ -19,6 +19,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+  progressDeadlineSeconds: 30      
   strategy:
     blueGreen: 
       # activeService specifies the service to update with the new template hash at time of promotion.
