@@ -28,4 +28,4 @@ jobs:
 
 
     - name: Terraform Apply
-      run: terraform -chdir=Terraform/code apply -auto-approve
+      run: terraform -chdir=Terraform/code apply --auto-approve
