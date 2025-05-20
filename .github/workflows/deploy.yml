@@ -248,15 +248,15 @@ jobs:
         helm repo update   
 
     - name: Detect stuck Helm release manually and clean it
-    run: |
-      RELEASE_SECRET=$(kubectl get secrets -n argocd -l "owner=helm,name=argocd" -o name)
-      if [[ -n "$RELEASE_SECRET" ]]; then
-        echo "Found lingering Helm release secret: $RELEASE_SECRET. Cleaning up..."
-        helm uninstall argocd -n argocd || true
-        kubectl delete secret -n argocd -l "owner=helm,name=argocd" || true
-      else
-        echo "No lingering Helm release secrets found. Safe to proceed."
-      fi
+      run: |
+        RELEASE_SECRET=$(kubectl get secrets -n argocd -l "owner=helm,name=argocd" -o name)
+        if [[ -n "$RELEASE_SECRET" ]]; then
+          echo "Found lingering Helm release secret: $RELEASE_SECRET. Cleaning up..."
+          helm uninstall argocd -n argocd || true
+          kubectl delete secret -n argocd -l "owner=helm,name=argocd" || true
+        else
+          echo "No lingering Helm release secrets found. Safe to proceed."
+        fi
 
 
        
