@@ -170,28 +170,28 @@ jobs:
           --wait \
           --atomic
 
-  # update-image-tag:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
+  update-image-tag:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-  #   - name: Update image tag in rollout.yaml
-  #     run: |
-  #       sed -i "s|image: *davidayo97/us-mobile-hello:.*|image: davidayo97/us-mobile-hello:${GITHUB_SHA}|" eksapp/templates/rollout.yaml
+    - name: Update image tag in rollout.yaml
+      run: |
+        sed -i "s|image: *davidayo97/us-mobile-hello:.*|image: davidayo97/us-mobile-hello:${GITHUB_SHA}|" eksapp/templates/rollout.yaml
 
-  #   - name: Commit and push image tag update
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     run: |
-  #       git config user.email "davidayodele64@example.com"
-  #       git config user.name "davidolufemi"
+    - name: Commit and push image tag update
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config user.email "davidayodele64@example.com"
+        git config user.name "davidolufemi"
 
-  #       git add eksapp/templates/rollout.yaml
-  #       git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes to commit"
+        git add eksapp/templates/rollout.yaml
+        git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes to commit"
         
-  #       git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
-  #       git push origin HEAD:${{ github.ref_name }}
+        git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+        git push origin HEAD:${{ github.ref_name }}
   
   setup-argocd-and-argo-rollouts:
     runs-on: ubuntu-latest
