@@ -6,18 +6,18 @@
 
 ##  Introduction
 
-This project demonstrates a GitOps-driven deployment of a Spring Boot microservice to an AWS EKS cluster. It leverages Terraform for infrastructure provisioning, ArgoCD for GitOps automation, Helm for packaging, and Argo Rollouts for blue/green deployment. Security scanning is integrated using Trivy and OWASP Dependency-Check.
+This project shows a GitOps-driven deployment of a Spring Boot microservice to an AWS EKS cluster. It uses Terraform to provision the infrastructure, ArgoCD for GitOps automation and monitoring, Helm for packaging our application, and Argo Rollouts for blue/green deployment. Security is integrated using Trivy and OWASP Dependency-Check.
 
 ---
 
 ##  Infrastructure Provisioning
 
-- **Tool:** Terraform – used to provision the environment in a cloud-agnostic and modular way.
+- **Tool:** Terraform – Terraform was chosen because it is cloud agnostic and follows AWS best practices during environment provisioning.
 - **Resources:** EKS, VPC, IAM roles.
 - **Security:**
   - The control plane and data plane are deployed in private subnets for enhanced security.
   - IAM roles such as `AWSServiceRoleForAmazonEKSNodegroup` and `AWSServiceRoleForAutoScaling` are provisioned based on AWS best practices.
-- **Compute:** I selected EC2-managed node groups for this implementation. While Fargate is also a great option (being serverless and cost-efficient for predictable workloads), EC2 was chosen for simplicity and speed during setup.
+- **Compute:** I selected EC2-managed node groups for this implementation. While Fargate is also a great option (being serverless and cost-efficient for predictable workloads), EC2 was chosen for simplicity and speed during setup. The downside is we would have to install security patches ourselves.
 
 ---
 
@@ -33,9 +33,9 @@ This project demonstrates a GitOps-driven deployment of a Spring Boot microservi
 
 I intentionally used a vulnerable image to simulate real-world scenarios and implemented a DevSecOps pipeline to catch security issues:
 
-- **Trivy:** Scans OS packages and application libraries on every commit. Results are available in the repository’s security tab.
+- **Trivy:** Scans the container for vulnerabilities and gives the associated CVE. Results are in this repository’s security tab.
 - **OWASP Dependency-Check:** Analyzes Java dependencies for known CVEs by scanning the `pom.xml`. Results can be viewed in the GitHub Actions tab under the workflow run labeled **Depcheck Report**.
-- **Production Note:** In real deployments, I would use distroless base images to significantly reduce the attack surface.
+- **Production Note:** In real deployments, I would use distroless images to reduce the attack surface. 
 
 ---
 
@@ -159,20 +159,20 @@ After updating the image tag in `rollout.yaml`, Argo Rollouts initiated the new 
 
 ![Improvement Diagram](https://github.com/user-attachments/assets/dbde79e9-da1c-4efc-acbf-6fa1863d6731)
 
-1. **Monitoring & Alerting:** Integrate Prometheus and Grafana to track metrics and define alert thresholds.
-2. **Secrets Management:** Use AWS KMS or External Secrets Operator to manage sensitive information securely.
-3. **Web Security:** Protect web apps with AWS WAF and rate limiting.
-4. **Observability:** Add CloudWatch Container Insights for detailed cluster insights.
-5. **Policy Enforcement:** Use OPA/Gatekeeper to enforce compliance and resource constraints.
+1. **Monitoring & Alerting:** Install Prometheus and Grafana in the cluster to monitor for potential issues based on set metrics.
+2. **Secrets Management:** Use AWS KMS to manage secrets.
+3. **Web Security:** Use WAF to protect the application from web app vulnerabilities (e.g OWASP 10).
+4. **Observability:** CloudWatch to observe environment. We can also save them if we need to be compliant.
+5. **Policy Enforcement:** Use OPA/Gatekeeper for compliance purposes.
 
 ---
 
 ##  Summary
 
-- EKS provisioned with Terraform
-- Spring Boot app containerized with Docker and Git-tagged
-- CI pipeline builds and pushes to Docker Hub
-- Helm chart updated and deployed via ArgoCD
-- Rollback tested using Helm’s `--atomic` flag
-- Blue/green deployment strategy implemented using Argo Rollouts
-- Trivy and OWASP scanning integrated for DevSecOps coverage
+- Provision cloud infrastructure with Teraform
+- Containerize Spring app.
+- Pipeline builds and pushes to Docker Hub
+- Helm chart is updated and deployed via ArgoCD
+- Rollback testing was performed using Helm’s `--atomic` flag
+- Blue/green deployment strategy was implemented using Argo Rollouts
+- Trivy and OWASP dependency check were integrated for DevSecOps coverage
