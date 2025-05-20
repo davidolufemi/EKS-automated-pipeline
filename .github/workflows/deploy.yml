@@ -3,6 +3,10 @@ name: Deploy Infrastructure with Terraform
 on:
   workflow_dispatch:  # Manual trigger from GitHub Actions UI
 
+permissions:
+  contents: write
+
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -165,4 +169,21 @@ jobs:
           --values ./eksapp/values.yaml \
           --wait \
           --atomic
-      
+
+    - name: Update image tag in values.yaml
+      run: |
+        sed -i "s/tag:.*/tag: \"${GITHUB_SHA}\"/" helm/eksapp/values.yaml
+
+    - name: Commit and push image tag update
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config user.email "davidayodele64@example.com"
+        git config user.name "davidolufemi"
+
+        git add eksapp/values.yaml
+        git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes to commit"
+        
+        git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+        git push origin HEAD:${{ github.ref_name }}
+  
