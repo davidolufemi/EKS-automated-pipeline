@@ -175,7 +175,7 @@ jobs:
     steps:
     - name: Update image tag in values.yaml
       run: |
-        sed -i "s/tag:.*/tag: \"${GITHUB_SHA}\"/" eksapp/values.yaml
+        sed -i "s/tag:.*/tag: \"${GITHUB_SHA}\"/" eksapp/templates/rollout.yaml
 
     - name: Commit and push image tag update
       env:
@@ -184,7 +184,7 @@ jobs:
         git config user.email "davidayodele64@example.com"
         git config user.name "davidolufemi"
 
-        git add eksapp/values.yaml
+        git add eksapp/templates/rollout.yaml
         git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes to commit"
         
         git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
