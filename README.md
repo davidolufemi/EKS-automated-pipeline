@@ -82,7 +82,8 @@ helm upgrade eksapp ./eksapp-0.1.0.tgz \
 
 **Error Screenshot:**
 
-![Rollback Failure](https://github.com/user-attachments/assets/f99b9cae-2a43-4d17-90e1-bc329577a638)
+<img width="1338" alt="image" src="https://github.com/user-attachments/assets/111b782b-3f84-4466-ad14-23a2d81f3c72" />
+
 
 ---
 
