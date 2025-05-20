@@ -243,7 +243,10 @@ jobs:
     - name: Install ArgoCD 
       run: |
         helm upgrade --install argocd argo/argo-cd \
-        --set server.enabled=true 
+        --namespace argocd \
+        --set server.enabled=true \
+        --set dex.enabled=true \
+        --wait
 
     - name: Install the ArgoCD application 
       run: |
