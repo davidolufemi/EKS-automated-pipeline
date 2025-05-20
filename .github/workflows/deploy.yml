@@ -227,9 +227,12 @@ jobs:
     - name: Create Argo Rollouts namespace
       run: kubectl create namespace argo-rollouts --dry-run=client -o yaml | kubectl apply -f -
 
-    - name: Install Argo Rollouts via Helm
+    - name: Install Argo Rollouts 
       run: |
         kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
        
 
-    
+    - name: Install ArgoCD 
+      run: |
+        helm install argocd argo/argo-cd -n argocd 
+       
