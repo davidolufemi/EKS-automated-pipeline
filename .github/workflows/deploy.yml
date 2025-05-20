@@ -242,7 +242,8 @@ jobs:
    
     - name: Install ArgoCD 
       run: |
-        helm upgrade --install argocd argo/argo-cd
+        helm upgrade --install argocd argo/argo-cd \
+        --set server.enabled=true 
 
     - name: Install the ArgoCD application 
       run: |
