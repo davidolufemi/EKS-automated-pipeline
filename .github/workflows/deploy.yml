@@ -28,5 +28,5 @@ jobs:
 
 
     -  name: Terraform Apply
-       run: terraform -chdir=Terraform/ apply --auto-approve -var="Environment=dev"
+       run: terraform -chdir=Terraform/ apply --auto-approve
 
