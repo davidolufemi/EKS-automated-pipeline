@@ -78,6 +78,7 @@ helm upgrade eksapp ./eksapp-0.1.0.tgz \
 ```
 
 - Helm attempted the upgrade and failed because it couldn’t pull the image. With `--atomic` enabled, Helm automatically rolled back to the previous version. It failed after 5 minutes which is the default timer.
+- We could further automate this by having a runner package and apply this update to our cluster, instead of applying it ourselves.
 
 **Error Screenshot:**
 
