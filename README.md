@@ -48,6 +48,7 @@ I intentionally used a vulnerable image to simulate real-world scenarios and imp
 4. Helm chart is updated with the new tag.
 
 ### ArgoCD GitOps Workflow
+- Install ArgoCD using Helm.
 - ArgoCD monitors the `values.yaml` for changes (e.g., image tag updates).
 - Automatically syncs the changes to the EKS cluster.
 
@@ -86,7 +87,7 @@ helm upgrade eksapp ./eksapp-0.1.0.tgz \
 
 ##  Blue/Green Deployment with Argo Rollouts (Extra Credit)
 
-I implemented a blue/green deployment strategy using Argo Rollouts.
+I implemented a blue/green deployment strategy using Argo Rollouts. We need to install Argo Rollouts using Helm before anything. After that is done, we proceed to our rollout strategy.
 
 ### Rollout Strategy Config:
 ```yaml
