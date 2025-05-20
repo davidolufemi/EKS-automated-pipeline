@@ -230,7 +230,11 @@ jobs:
     - name: Install Argo Rollouts 
       run: |
         kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
-       
+
+    - name: Add Argo Helm repo
+      run: |
+        helm repo add argo https://argoproj.github.io/argo-helm
+        helm repo update   
 
     - name: Create Argo namespace
       run: kubectl create namespace argocd
