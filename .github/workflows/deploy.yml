@@ -1,7 +1,9 @@
 name: Deploy Infrastructure with Terraform
 
 on:
-  workflow_dispatch:  # Manual trigger from GitHub Actions UI
+  push:
+    branches:
+      - main 
 
 permissions:
   contents: write
