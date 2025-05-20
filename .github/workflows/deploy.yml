@@ -236,8 +236,8 @@ jobs:
         helm repo add argo https://argoproj.github.io/argo-helm
         helm repo update   
 
-    - name: Create Argo namespace
-      run: kubectl create namespace argocd
+    - name: Create ArgoCD namespace
+      run: kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
  
     
     - name: Install ArgoCD 
