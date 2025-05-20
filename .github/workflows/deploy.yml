@@ -247,25 +247,38 @@ jobs:
         helm repo add argo https://argoproj.github.io/argo-helm
         helm repo update   
 
-    - name: Detect stuck Helm release and roll back if needed
+    - name: Detect and handle stuck Helm release (safe for prod)
       run: |
-        RELEASE_JSON=$(helm list -n argocd -f argocd -o json)
+        set -e
+
+        echo "🔍 Checking ArgoCD Helm release status..."
+        RELEASE_JSON=$(helm list -n argocd -f argocd -o json || echo "")
+
         if [[ "$RELEASE_JSON" != "[]" && "$RELEASE_JSON" != "" ]]; then
           STATUS=$(echo "$RELEASE_JSON" | jq -r '.[0].status')
-          echo "ArgoCD release status: $STATUS"
-          
+          echo "✅ ArgoCD release status: $STATUS"
+
           if [[ "$STATUS" == "pending-install" || "$STATUS" == "pending-upgrade" || "$STATUS" == "pending-rollback" ]]; then
-            echo "::warning ::Release is stuck in $STATUS. Attempting rollback..."
+            echo "::warning ::Helm release is stuck in $STATUS. Attempting rollback..."
             helm rollback argocd -n argocd || {
               echo "::error ::Rollback failed. Manual intervention required."
               exit 1
             }
-          else
-            echo "No stuck release. Status: $STATUS"
           fi
         else
-          echo "No existing ArgoCD release found. Proceeding with fresh install."
+          echo "⚠️ No active Helm release found via 'helm list'. Checking secrets for leftover Helm release metadata..."
+          HELM_SECRETS=$(kubectl get secrets -n argocd -l "owner=helm,name=argocd" -o name || true)
+
+          if [[ -n "$HELM_SECRETS" ]]; then
+            echo "::error ::Helm release is invisible to Helm but still exists as secrets:"
+            echo "$HELM_SECRETS"
+            echo "❌ Skipping install to avoid production overwrite."
+            exit 1
+          else
+            echo "✅ No Helm secrets found. Proceeding with fresh install."
+          fi
         fi
+
    
     - name: Install ArgoCD 
       run: |
