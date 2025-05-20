@@ -229,7 +229,7 @@ jobs:
 
     - name: Install Argo Rollouts via Helm
       run: |
-       helm upgrade --install argo-rollouts argo/argo-rollouts \
-       --namespace argo-rollouts \
-       --wait
+        kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+       
+
     
