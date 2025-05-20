@@ -190,7 +190,7 @@ jobs:
         git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
         git push origin HEAD:${{ github.ref_name }}
   
-  setup:
+  setup-argocd-and-argo-rollouts:
     runs-on: ubuntu-latest
 
     env:
@@ -223,3 +223,13 @@ jobs:
     - name: Update kubeconfig
       run: |
         aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+
+    - name: Create Argo Rollouts namespace
+      run: kubectl create namespace argo-rollouts --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Install Argo Rollouts via Helm
+      run: |
+       helm upgrade --install argo-rollouts argo/argo-rollouts \
+       --namespace argo-rollouts \
+       --wait
+    
