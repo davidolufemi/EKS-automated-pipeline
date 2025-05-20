@@ -242,5 +242,9 @@ jobs:
     
     - name: Install ArgoCD 
       run: |
-        helm install argocd argo/argo-cd -n argocd 
+        helm upgrade --install argocd argo/argo-cd
+
+    - name: Install the ArgoCD application 
+      run: |
+        kubectl apply -f application.yaml
        
