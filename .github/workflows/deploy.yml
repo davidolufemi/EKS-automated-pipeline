@@ -266,12 +266,6 @@ jobs:
         else
           echo "No existing ArgoCD release found. Proceeding with fresh install."
         fi
-
-
-
-       
-
-
    
     - name: Install ArgoCD 
       run: |
