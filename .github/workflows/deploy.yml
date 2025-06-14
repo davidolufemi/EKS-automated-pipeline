@@ -10,31 +10,31 @@ permissions:
 
 
 jobs:
-  terraform:
-    runs-on: ubuntu-latest
+  # terraform:
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+  #   steps:
+  #   - name: Checkout repository
+  #     uses: actions/checkout@v3
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+  #   - name: Configure AWS credentials
+  #     uses: aws-actions/configure-aws-credentials@v2
+  #     with:
+  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       aws-region: us-east-1
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.5.6
+  #   - name: Set up Terraform
+  #     uses: hashicorp/setup-terraform@v3
+  #     with:
+  #       terraform_version: 1.5.6
 
-    - name: Terraform Init
-      run: terraform -chdir=Terraform/ init
+  #   - name: Terraform Init
+  #     run: terraform -chdir=Terraform/ init
 
 
-    -  name: Terraform Apply
-       run: terraform -chdir=Terraform/ apply --auto-approve
+  #   -  name: Terraform Apply
+  #      run: terraform -chdir=Terraform/ apply --auto-approve
 
   build:
     runs-on: ubuntu-latest
@@ -128,49 +128,49 @@ jobs:
       - name: Push Docker image
         run: docker push davidayo97/us-mobile-hello:${GITHUB_SHA}
   
-  deploy-helm:
-    runs-on: ubuntu-latest
+  # deploy-helm:
+  #   runs-on: ubuntu-latest
 
-    env:
-      AWS_REGION: us-east-1
-      CLUSTER_NAME: app-cluster
-      NAMESPACE: eksappns
-      RELEASE_NAME: eksapp
+  #   env:
+  #     AWS_REGION: us-east-1
+  #     CLUSTER_NAME: app-cluster
+  #     NAMESPACE: eksappns
+  #     RELEASE_NAME: eksapp
 
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+  #   steps:
+  #   - name: Checkout repo
+  #     uses: actions/checkout@v3
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+  #   - name: Configure AWS Credentials
+  #     uses: aws-actions/configure-aws-credentials@v2
+  #     with:
+  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       aws-region: ${{ env.AWS_REGION }}
 
-    - name: Install kubectl
-      run: |
-        curl -LO "https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl"
-        chmod +x kubectl
-        sudo mv kubectl /usr/local/bin/
+  #   - name: Install kubectl
+  #     run: |
+  #       curl -LO "https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl"
+  #       chmod +x kubectl
+  #       sudo mv kubectl /usr/local/bin/
 
-    - name: Update kubeconfig for EKS
-      run: aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
+  #   - name: Update kubeconfig for EKS
+  #     run: aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
 
-    - name: Set up Helm
-      run: |
-        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-        chmod 700 get_helm.sh
-        ./get_helm.sh
+  #   - name: Set up Helm
+  #     run: |
+  #       curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+  #       chmod 700 get_helm.sh
+  #       ./get_helm.sh
 
-    - name: Deploy Helm chart with atomic rollback
-      run: |
-        helm upgrade --install $RELEASE_NAME ./eksapp \
-          --namespace $NAMESPACE \
-          --create-namespace \
-          --values ./eksapp/values.yaml \
-          --wait \
-          --atomic
+  #   - name: Deploy Helm chart with atomic rollback
+  #     run: |
+  #       helm upgrade --install $RELEASE_NAME ./eksapp \
+  #         --namespace $NAMESPACE \
+  #         --create-namespace \
+  #         --values ./eksapp/values.yaml \
+  #         --wait \
+  #         --atomic
 
   update-image-tag:
     runs-on: ubuntu-latest
