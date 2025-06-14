@@ -17,7 +17,7 @@ class DemoController {
 
     @GetMapping("/")
     public String home() {
-        return "testing cicd";
+        return "testing CI/CD!";
     }
 
     @GetMapping("/health")
