@@ -8,7 +8,7 @@ Environment = "prod"
 
 
 #EKS
-cluster_name = "app-cluster2"
+cluster_name = "app-cluster"
 cluster_version = "1.31"
 bootstrap_self_managed_addons = true
 cluster_endpoint_public_access = true
