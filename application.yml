@@ -24,7 +24,7 @@ spec:
   
   destination:
     server: https://kubernetes.default.svc
-    namespace: eksappns
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
