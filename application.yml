@@ -18,9 +18,9 @@ spec:
   project: default
   
   source:
-    repoURL: https://github.com/davidolufemi/us-mobile-takehome.git
+    repoURL: https://github.com/davidolufemi/EKS-automated-pipeline.git
     targetRevision: HEAD
-    path: eksapp
+    path: monitor
   
   destination:
     server: https://kubernetes.default.svc
